@@ -15,8 +15,7 @@ def mktrn(string, assign):
 fn_tran = mktrn(r'<>:"/\|?*', '-') if OS is WINDOWS else mktrn('/', '-')
 Mb = 1024 * 1024
 chunk_size = Mb
-media_finder = re.compile("http://media.cdn.shoutengine.com/podcasts/.*\.mp3")
-podbay = "http://podbay.fm/show/"
+media_finder = re.compile(".*\.mp3.*")
 
 if 'progress' not in sys.modules:
   def incremental_dl(url, filename):
@@ -26,7 +25,7 @@ if 'progress' not in sys.modules:
       for data in req_data.iter_content(chunk_size):
         file.write(data)
       print("'%s' downloaded." % filename)
-    os.rename(filename+'.tmp', filename+'.mp3')
+    os.rename(filename+'.tmp', filename)
 else:
   def incremental_dl(url, filename):
     with open(filename+'.tmp', 'wb') as file:
@@ -37,7 +36,7 @@ else:
         file.write(data)
         bar.next()
       bar.finish()
-    os.rename(filename+'.tmp', filename+'.mp3')
+    os.rename(filename+'.tmp', filename)
 
 class Episode:
   __slots__ = ['page_url', 'title', 'comment']
@@ -47,18 +46,20 @@ class Episode:
     self.comment = comment
   def media_url(self):
     soup = BeautifulSoup(req.get(self.page_url).text, 'lxml')
-    return soup.find('a', href=media_finder).get('href')
+    return soup.find('a', href=media_finder, **{'class': 'btn btn-mini btn-primary'}).get('href')
   def download(self):
     media_url = self.media_url()
     try:
-      incremental_dl(media_url, self.title)
+      incremental_dl(media_url, self.title + '.mp3')
     except OSError:
       safe_title = self.title.translate(fn_tran)
-      incremental_dl(media_url, safe_title)
+      incremental_dl(media_url, safe_title + '.mp3')
 
 class Podbay:
   __slots__ = ['uploader_url', 'name', 'img_url', 'episodes']
   def __init__(self, uploader):
+    if uploader.isdigit():
+      uploader = "http://podbay.fm/show/" + uploader
     self.uploader_url = uploader
     request = req.get(uploader)
     if request.status_code is not 200:
@@ -97,9 +98,8 @@ class Podbay:
 
 if __name__ == "__main__":
   if len(sys.argv) < 1:
-    raise ValueError('Missing parameters: pbdl.py [full_url/show_id...]')
+    raise ValueError('Missing parameters: full_url/show_id...')
   for url in sys.argv[1:]:
-    if url.isdigit():
-      url = podbay + url
     uploader = Podbay(url)
     uploader.download()
+

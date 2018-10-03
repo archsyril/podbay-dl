@@ -12,7 +12,7 @@ use `$ podbay-dl http://podbay.fm/show/360084272`, or more easily, you may omit 
 
 ### Import
 this is how to use it from within the python code itself.
-```
+```python
 import podbay-dl
 show_id = '360084272' # The full URL works as well, just as with the cmd line method
 uploader = Podbay(show_id)
