@@ -7,7 +7,14 @@ firstly, the `requests` and  `bs4` modules are required to run this script. do `
 optionally you may also install the `progress` module (also available with pip) to get a pretty progress bar view :-).
 
 ## How to use this
-whatever
+### Calling from the command line
+use `$ podbay-dl http://podbay.fm/show/360084272`, or more easily, you may omit the 'http://podbay.fm/show/' like so `$ podbay-dl 360084272`.
 
-## Pulls
-if you want to add cool stuff to make it better that would be awesome.
+### Import
+this is how to use it from within the python code itself.
+```
+import podbay-dl
+show_id = '360084272' # The full URL works as well, just as with the cmd line method
+uploader = Podbay(show_id)
+uploader.download()
+```
