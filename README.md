@@ -8,7 +8,7 @@ optionally you may also install the `progress` module (also available with pip) 
 
 ## How to use this
 ### Calling from the command line
-use `$ podbay-dl http://podbay.fm/show/360084272`, or more easily, you may omit the 'http://podbay.fm/show/' like so `$ podbay-dl 360084272`.
+use `$ podbay-dl http://podbay.fm/show/360084272`, or more easily, you may omit the 'http://podbay.fm/show/' like so `$ podbay-dl 360084272`, you may also string as many id's or url's at the end of the command and they will be downloaded sequentially. `$ podbay-dl 360084272 1113585468`
 
 ### Import
 this is how to use it from within the python code itself.
